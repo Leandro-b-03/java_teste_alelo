@@ -5,3 +5,6 @@
 
 2) Construa uma chamada de api em java usando jayway rest assured e valide a mensagem da url:
 https://jsonplaceholder.typicode.com/todos/1
+
+
+Video: https://www.youtube.com/watch?v=eeXOoxWuXGA
