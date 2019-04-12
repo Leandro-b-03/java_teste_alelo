@@ -16,7 +16,7 @@ public class App {
 	private static ArrayList<Director> Directors = new ArrayList<Director>();
 
 	public static void main(String[] args) {
-		Director director = new Director("Snider", "01/01/1990");
+		Director director = new Director("Snyder", "01/01/1990");
 
 		Directors.add(director);
 
@@ -42,7 +42,7 @@ public class App {
 
 		int value = scanner.nextInt();
 		while (value < 1 || value > maxValue) {
-			System.out.println("invalid menu item, please try again");
+			System.out.println("Menu inválido, poor favor, tente novamente.");
 			// java.util.InputMismatchException should also be caught
 			// to intercept non-numeric input
 			value = scanner.nextInt();
@@ -60,26 +60,7 @@ public class App {
 			break;
 		}
 		case 2: {
-			if (director == null) {
-				director = selectDirector(scanner);
-			}
-
-			scanner.nextLine();
-			String name;
-			System.out.println("Por favor o nome do Filme:");
-			name = scanner.nextLine();
-
-			String release_date;
-			System.out.println("Por favor a data de lançamento do Filme:");
-			release_date = scanner.nextLine();
-
-			Movie movie = director.insertMovie(name, release_date);
-
-			System.out.println("Novo Filme inserido:");
-			System.out.println("Nome: " + movie.getName());
-			System.out.println("Lançamento: " + movie.getreleaseDate());
-
-			System.out.println("\n------------------------------;");
+			Movie movie = insertMovie(scanner, director);
 
 			menu(2, director, 2);
 			break;
@@ -142,6 +123,31 @@ public class App {
 		return newDirector;
 	}
 
+	private static Movie insertMovie(Scanner scanner, Director director) {
+		if (director == null) {
+			director = selectDirector(scanner);
+		}
+
+		scanner.nextLine();
+		String name;
+		System.out.println("Por favor o nome do Filme:");
+		name = scanner.nextLine();
+
+		String release_date;
+		System.out.println("Por favor a data de lançamento do Filme:");
+		release_date = scanner.nextLine();
+
+		Movie newMovie = director.insertMovie(name, release_date);
+
+		System.out.println("Novo Filme inserido:");
+		System.out.println("Nome: " + newMovie.getName());
+		System.out.println("Lançamento: " + newMovie.getreleaseDate());
+
+		System.out.println("\n------------------------------;");
+
+		return newMovie;
+	}
+
 	private static Director selectDirector(Scanner scanner) {
 		System.out.println("Selecione um Diretor:");
 
@@ -167,8 +173,12 @@ public class App {
 	private static int selectMovie(Scanner scanner, Director director) {
 		System.out.println("Selecione um Diretor:");
 
-		for (int i = 0; i < director.getMovies().size(); i++) {
-			System.out.println((i + 1) + " - " + director.getMovies().get(i).getName());
+		if (director.getMovies().size() > 0) {
+			for (int i = 0; i < director.getMovies().size(); i++) {
+				System.out.println((i + 1) + " - " + director.getMovies().get(i).getName());
+			}
+		} else {
+
 		}
 		scanner.nextLine();
 		int directorNumber;
@@ -178,54 +188,51 @@ public class App {
 	}
 
 	private static void menu(int choosed, Director director, int maxValue) {
+		switch (choosed) {
+		case 1:
+			// clearConsole();
+			System.out.println("Digite 1 caso queira adicionar um novo Diretor");
+			System.out.println("Digite 2 caso queira adicionar um Filme a esse Diretor");
+			System.out.println("Digite 3 caso queira sair");
 
-		while (choosed < 1 || choosed > maxValue) {
-			switch (choosed) {
-			case 1:
-				// clearConsole();
-				System.out.println("Digite 1 caso queira adicionar um novo Diretor");
-				System.out.println("Digite 2 caso queira adicionar um Filme a esse Diretor");
-				System.out.println("Digite 3 caso queira sair");
+			try (Scanner scanner = new Scanner(System.in)) {
+				int mainMenuSelection = askUserForNumberInput(scanner, 3, false);
 
-				try (Scanner scanner = new Scanner(System.in)) {
-					int mainMenuSelection = askUserForNumberInput(scanner, 3, false);
-
-					if (mainMenuSelection == 3) {
-						mainMenuSelection = 4;
-					}
-					cases(mainMenuSelection, scanner, director);
+				if (mainMenuSelection == 3) {
+					mainMenuSelection = 4;
 				}
-				break;
-			case 2:
-				System.out.println("Digite 1 caso queira adicionar um novo Filme a esse Diretor");
-				System.out.println("Digite 2 caso queira sair");
-				try (Scanner scanner = new Scanner(System.in)) {
-					int mainMenuSelection = askUserForNumberInput(scanner, 2, false);
+				cases(mainMenuSelection, scanner, director);
+			}
+			break;
+		case 2:
+			System.out.println("Digite 1 caso queira adicionar um novo Filme a esse Diretor");
+			System.out.println("Digite 2 caso queira sair");
+			try (Scanner scanner = new Scanner(System.in)) {
+				int mainMenuSelection = askUserForNumberInput(scanner, 2, false);
 
-					if (mainMenuSelection == 1) {
-						mainMenuSelection = 2;
-					} else if (mainMenuSelection == 2) {
-						mainMenuSelection = 4;
-					}
-
-					cases(mainMenuSelection, scanner, director);
+				if (mainMenuSelection == 1) {
+					mainMenuSelection = 2;
+				} else if (mainMenuSelection == 2) {
+					mainMenuSelection = 4;
 				}
-				break;
-			case 3:
-				System.out.println("Digite 1 caso queira pesquisar outro Diretor e Filme");
-				System.out.println("Digite 2 caso queira sair");
-				
-				try (Scanner scanner = new Scanner(System.in)) {
-					int mainMenuSelection = askUserForNumberInput(scanner, 2, false);
 
-					if (mainMenuSelection == 1) {
-						mainMenuSelection = 3;
-					} else if (mainMenuSelection == 2) {
-						mainMenuSelection = 4;
-					}
+				cases(mainMenuSelection, scanner, director);
+			}
+			break;
+		case 3:
+			System.out.println("Digite 1 caso queira pesquisar outro Diretor e Filme");
+			System.out.println("Digite 2 caso queira sair");
 
-					cases(mainMenuSelection, scanner, director);
+			try (Scanner scanner = new Scanner(System.in)) {
+				int mainMenuSelection = askUserForNumberInput(scanner, 2, false);
+
+				if (mainMenuSelection == 1) {
+					mainMenuSelection = 3;
+				} else if (mainMenuSelection == 2) {
+					mainMenuSelection = 4;
 				}
+
+				cases(mainMenuSelection, scanner, director);
 			}
 		}
 	}
